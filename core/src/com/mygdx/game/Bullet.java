@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class Bullet {
     private Vector2 position;
@@ -10,13 +11,19 @@ public class Bullet {
 
     public Bullet(float x, float y, float angle) {
         position = new Vector2(x, y);
-        speed = 5;
-        velocity = new Vector2(speed * MathUtils.cos(angle), speed * MathUtils.sin(angle));
+        speed = 400;
+        velocity = new Vector2(speed * MathUtils.cosDeg(angle), speed * MathUtils.sinDeg(angle));
     }
 
     public void update(float deltaTime) {
         position.x += velocity.x * deltaTime;
         position.y += velocity.y * deltaTime;
+
+        if (position.y > (MainGame.SCREEN_HEIGHT/2) + 50) {
+            Array<Bullet> tempGlobalBullets = MainGame.getGlobalBullets();
+            tempGlobalBullets.removeValue(this, true);
+            MainGame.setGlobalBullets(tempGlobalBullets);
+        }
     }
 
     public Vector2 getPosition() {

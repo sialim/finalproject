@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,11 +10,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainGame extends ApplicationAdapter {
 	public static final int SCREEN_WIDTH = 500;
 	public static final int SCREEN_HEIGHT = 700;
+
+	private static Array<Bullet> globalBullets;
 
 	private static final float FRAME_DURATION = 0.1f;
 
@@ -23,6 +27,9 @@ public class MainGame extends ApplicationAdapter {
 	private Texture startRightTexture;
 	private Texture leftTexture;
 	private Texture rightTexture;
+
+	// Textures for bullets
+	private Texture playerBulletTexture;
 
 	// Animations for player
 	private Animation<TextureRegion> idleAnimation;
@@ -39,6 +46,14 @@ public class MainGame extends ApplicationAdapter {
 	Sprite sprite;
 	Sprite background;
 	Player player;
+
+	public static Array<Bullet> getGlobalBullets() {
+		return globalBullets;
+	}
+
+	public static void setGlobalBullets(Array<Bullet> newGlobalBullets) {
+		globalBullets = newGlobalBullets;
+	}
 
 	@Override
 	public void create () {
@@ -63,6 +78,10 @@ public class MainGame extends ApplicationAdapter {
 		sprite.setPosition(0, 0);
 		sprite.setSize(20, 20);
 
+		playerBulletTexture = new Texture("playerbullet.jpg");
+
+		globalBullets = new Array<>();
+
 		background = new Sprite(new Texture("background.jpg"));
 		background.setPosition(0, 0);
 
@@ -74,6 +93,11 @@ public class MainGame extends ApplicationAdapter {
 	public void render () {
 		deltaTime = Gdx.graphics.getDeltaTime();
 		player.move(deltaTime);
+		player.updateBullets(deltaTime);
+
+		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+			player.toggleAutoFire();
+		}
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -82,14 +106,22 @@ public class MainGame extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
+
 		batch.draw(background, -650, -350);
+
+		for (Bullet bullet : player.getBullets()) {
+			batch.draw(playerBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 10, 20);
+		}
+
 		batch.draw(player.getSprite(), player.getX(), player.getY());
+
 		batch.end();
 	}
 
 	@Override
 	public void dispose () {
 		batch.dispose();
+		playerBulletTexture.dispose();
 		/*idleTexture.dispose();
 		startLeftTexture.dispose();
 		startRightTexture.dispose();
