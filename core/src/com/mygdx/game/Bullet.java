@@ -11,7 +11,13 @@ public class Bullet {
 
     public Bullet(float x, float y, float angle) {
         position = new Vector2(x, y);
-        speed = 400;
+        speed = 700;
+        velocity = new Vector2(speed * MathUtils.cosDeg(angle), speed * MathUtils.sinDeg(angle));
+    }
+
+    public Bullet(float x, float y, float angle, float speed) {
+        position = new Vector2(x, y);
+        this.speed = speed;
         velocity = new Vector2(speed * MathUtils.cosDeg(angle), speed * MathUtils.sinDeg(angle));
     }
 

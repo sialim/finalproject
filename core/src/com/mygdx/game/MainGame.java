@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,9 +14,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainGame extends ApplicationAdapter {
+public class MainGame extends Game {
 	public static final int SCREEN_WIDTH = 500;
 	public static final int SCREEN_HEIGHT = 700;
+
+	private GameScreen gameScreen;
+	private MenuScreen menuScreen;
+	private OptionsScreen optionsScreen;
 
 	private static Array<Bullet> globalBullets;
 
@@ -58,17 +63,19 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		// Register player textures
-		idleTexture = new Texture("reimuidle.gif");
+		/*idleTexture = new Texture("reimuidle.gif");
 		startLeftTexture = new Texture("reimuleft.gif");
 		startRightTexture = new Texture("reimuright.gif");
 		leftTexture = new Texture("reimuleftcontinuous.gif");
-		rightTexture = new Texture("reimurightcontinuous.gif");
+		rightTexture = new Texture("reimurightcontinuous.gif");*/
 
 		/*idleAnimation = createAnimation(idleTexture, 8);
 		startLeftAnimation = createAnimation(startLeftTexture, 8);
 		startRightAnimation = createAnimation(startRightTexture, 8);
 		leftAnimation = createAnimation(leftTexture, 3);
 		rightAnimation = createAnimation(rightTexture, 3);*/
+
+
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -85,37 +92,14 @@ public class MainGame extends ApplicationAdapter {
 		background = new Sprite(new Texture("background.jpg"));
 		background.setPosition(0, 0);
 
-		player = new Player(200, sprite, idleAnimation,
-				startLeftAnimation,startRightAnimation, leftAnimation, rightAnimation);
+		player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
+
+		this.setScreen(new MenuScreen(this));
 	}
 
 	@Override
 	public void render () {
-		deltaTime = Gdx.graphics.getDeltaTime();
-		player.move(deltaTime);
-		player.updateBullets(deltaTime);
-
-		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
-			player.toggleAutoFire();
-		}
-
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		ScreenUtils.clear(1, 0, 0, 1);
-		batch.setProjectionMatrix(camera.combined);
-
-		batch.begin();
-
-		batch.draw(background, -650, -350);
-
-		for (Bullet bullet : player.getBullets()) {
-			batch.draw(playerBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 10, 20);
-		}
-
-		batch.draw(player.getSprite(), player.getX(), player.getY());
-
-		batch.end();
+		super.render();
 	}
 
 	@Override
