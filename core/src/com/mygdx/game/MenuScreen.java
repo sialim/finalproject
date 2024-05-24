@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MenuScreen implements Screen {
     private final MainGame mainGame;
+    private final com.mygdx.game.BulletPattern bulletPattern;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Texture titleTexture;
@@ -18,8 +19,9 @@ public class MenuScreen implements Screen {
     private String[] menuOptions;
     private int selectedOption;
 
-    public MenuScreen(MainGame mainGame) {
+    public MenuScreen(MainGame mainGame, com.mygdx.game.BulletPattern bulletPattern) {
         this.mainGame = mainGame;
+        this.bulletPattern = bulletPattern;
         this.menuOptions = new String[] {"Start Game", "Options", "Exit"};
         this.selectedOption = 0;
     }
@@ -57,6 +59,8 @@ public class MenuScreen implements Screen {
             font.draw(batch, menuOptions[i], Gdx.graphics.getWidth() / 2f - 475, (Gdx.graphics.getHeight() / 2f - i * 40) - 300);
         }
 
+        //font.draw(batch, "Hello\nscreaming in public\nrestrooms prank", 0, 200);
+
         batch.end();
     }
 
@@ -75,7 +79,7 @@ public class MenuScreen implements Screen {
     private void selectOption() {
         switch (selectedOption) {
             case 0:
-                mainGame.setScreen(new GameScreen(mainGame));
+                mainGame.setScreen(new GameScreen(mainGame, bulletPattern));
                 break;
             case 1:
                 mainGame.setScreen(new OptionsScreen(mainGame));

@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,6 +22,8 @@ public class MainGame extends Game {
 	private GameScreen gameScreen;
 	private MenuScreen menuScreen;
 	private OptionsScreen optionsScreen;
+	private BulletPattern bulletPattern;
+	private Music backgroundMusic;
 
 	private static Array<Bullet> globalBullets;
 
@@ -92,9 +95,16 @@ public class MainGame extends Game {
 		background = new Sprite(new Texture("background.jpg"));
 		background.setPosition(0, 0);
 
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("meilingtheme.mp3"));
+		backgroundMusic.setLooping(true);
+		backgroundMusic.setVolume(0.5f);
+		backgroundMusic.play();
+
+
+
 		player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
 
-		this.setScreen(new MenuScreen(this));
+		this.setScreen(new MenuScreen(this, bulletPattern));
 	}
 
 	@Override

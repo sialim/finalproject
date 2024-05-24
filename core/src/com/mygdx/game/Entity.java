@@ -1,8 +1,9 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class Entity {
+public abstract class Entity extends Actor {
     private float x;
     private float y;
     private float maxHealth;
@@ -48,19 +49,27 @@ public class Entity {
         return health >= 1;
     }
 
-    public float getX() {
+    public float entGetX() {
         return x;
     }
 
-    public float getY() {
+    public float entGetY() {
         return y;
     }
 
-    public void setX(float x) {
+    public void entSetX(float x) {
         this.x = x;
     }
 
-    public void setY(float y) {
+    public void entSetY(float y) {
         this.y = y;
+    }
+
+    public abstract void move(float deltaTime);
+
+    public abstract void shoot();
+
+    public Sprite getSprite() {
+        return sprite;
     }
 }

@@ -25,12 +25,17 @@ public class Bullet {
         position.x += velocity.x * deltaTime;
         position.y += velocity.y * deltaTime;
 
-        if (position.y > (MainGame.SCREEN_HEIGHT/2) + 50) {
+        if ((position.y > (MainGame.SCREEN_HEIGHT/2) + 50) || (position.y < 0)) {
             Array<Bullet> tempGlobalBullets = MainGame.getGlobalBullets();
             tempGlobalBullets.removeValue(this, true);
             MainGame.setGlobalBullets(tempGlobalBullets);
         }
     }
+
+    public boolean isOffScreen(){
+        return false;
+    }
+
 
     public Vector2 getPosition() {
         return position;
