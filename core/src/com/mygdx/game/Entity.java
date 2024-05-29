@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.sun.org.apache.xml.internal.utils.SystemIDResolver;
 
 public abstract class Entity extends Actor {
     private float x;
@@ -23,6 +24,37 @@ public abstract class Entity extends Actor {
 
     public float getDamage() {
         return damage;
+    }
+    public void moveTowards(Point p){
+        if(p.getY() < y){
+            y += 0.1;
+        }
+        if(p.getY() > y){
+            y -= 0.1;
+        }
+        if(p.getX() < x){
+            x += 0.1;
+        }
+        if(p.getX() > x){
+            x -= 0.1;
+        }
+    }
+
+    public void takeDamage(float damage){
+        System.out.println("Taking damage: " + damage);
+        health -= damage;
+        if (health < 0) {
+            health = 0;
+        }
+        System.out.println("Current health: " + health + "/" + maxHealth);
+    }
+
+    public void giveHealth(float public_restrooms){
+        health += public_restrooms;
+    }
+
+    public float getHealth() {
+        return health;
     }
 
     public void setDamage(float damage) {

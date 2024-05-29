@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import sun.jvm.hotspot.utilities.BitMap;
 
+import java.util.Iterator;
+
 public class GameScreen implements Screen {
 
     private static Array<Bullet> globalBullets;
@@ -39,9 +41,10 @@ public class GameScreen implements Screen {
     Sprite background;
     Player player;
 
-    float timeSinceTextDisplayed;
+    float timer;
 
     BitmapFont font;
+    BitmapFont font2;
 
     Sprite bossSprite;
     Boss hongMeiling;
@@ -57,7 +60,11 @@ public class GameScreen implements Screen {
         font.getData().setScale(1.5f);
         font.setColor(0, 0, 0, 0);
 
-        timeSinceTextDisplayed = 0.0f;
+        font2 = new BitmapFont();
+        font2.setColor(Color.GOLD);
+        font2.getData().setScale(2.0f);
+
+        timer = 0.0f;
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -85,7 +92,7 @@ public class GameScreen implements Screen {
         background.setPosition(0, 0);
 
         player = new Player(200, 50, new CollisionRect(0, 0, 20, 20), sprite);
-        hongMeiling = new Boss(50000.0f, 1.0f, new CollisionRect(0, 0, 30, 30), bossSprite);
+        hongMeiling = new Boss(1000.0f, 1.0f, new CollisionRect(0, 200, 50, 50), bossSprite);
         hongMeiling.setX(MainGame.SCREEN_WIDTH/2f);
         hongMeiling.setY(1000.0f);
 
@@ -103,9 +110,11 @@ public class GameScreen implements Screen {
         player.move(deltaTime);
         player.updateBullets(deltaTime);
 
-        timeSinceTextDisplayed += deltaTime;
+        timer += deltaTime;
 
         player.getCollisionRect().move(player.getX(), player.getY());
+        hongMeiling.getCollisionRect().move(hongMeiling.getX(), hongMeiling.getY());
+        //System.out.println("Hong Meiling's CollisionRect is at: " + hongMeiling.getCollisionRect().x + ", " + hongMeiling.getCollisionRect().y);
 
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -119,18 +128,16 @@ public class GameScreen implements Screen {
         batch.draw(background, -650, -350);
 
         for (Bullet bullet : hongMeiling.getBullets()) {
-            batch.draw(bossBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 15, 15);
+            batch.draw(bossBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 20, 20);
             bullet.update(deltaTime);
-            //System.out.println("Rendering bullet at x: " + bullet.getPosition().x + ", y: " + bullet.getPosition().y);
-            //if ((bullet.getPosition().y < 0 || bullet.getPosition().y > MainGame.SCREEN_HEIGHT) || (bullet.getPosition().x < 0 || bullet.getPosition().x > MainGame.SCREEN_WIDTH)) {
-            //    hongMeiling.getBullets().removeValue(bullet, true);
-            //}
         }
 
         for (Bullet bullet : player.getBullets()) { /*Rendering all the bullets gathered from the player's personal bullet list
         Fuck ChatGPT*/
             batch.draw(playerBulletTexture, bullet.getPosition().x, bullet.getPosition().y, 10, 20);
         }
+
+        checkBulletCollisions();
 
         batch.draw(player.getSprite(), player.entGetX(), player.entGetY());
 
@@ -143,18 +150,27 @@ public class GameScreen implements Screen {
 
         batch.begin();
 
-        if (timeSinceTextDisplayed >= 1.8f && timeSinceTextDisplayed < 7.0f) {
+        if (timer >= 2.0f && timer < 5.0f) {
             font.setColor(1, 1, 1, 1);
-        } else if (timeSinceTextDisplayed >= 7.0f) {
+        } else if (timer >= 5.0f & timer < 7.0f) {
             font.setColor(0, 0, 0, 0);
+        } else if (timer >= 7.0f & timer < 7.5f) {
+            //bulletPattern.setRadialPattern(0, 500, 10, 300, new CollisionRect(0, 400, 30, 30));
         }
 
-        if (timeSinceTextDisplayed >= 7.2f && timeSinceTextDisplayed <= 8.2f) {
-            hongMeiling.handleShooting(deltaTime);
+        if (timer >= 6.0f && timer <= 6.5f) {
+            hongMeiling.shoot();
+        }
+
+        if (player.getHealth() >= 0.0f) {
+            //mainGame.setScreen(new GameOverScreen(mainGame, player));
         }
         // note to self later: keep using time and use modulo operators to determine when to move the boss and fire attacks
 
         font.draw(batch, "Fair is foul, and foul is fair.\nHover through the fog and filthy air.\nAUGUST 12 2036\nTHE HEAT DEATH OF THE UNIVERSE.", -150, -200);
+
+        font2.draw(batch, "HP: " + player.getHealth(), -100, -150);
+        font2.draw(batch, "Boss\nHP: " + hongMeiling.getHealth(), -200, 150);
 
 
         batch.end();
@@ -201,4 +217,19 @@ public class GameScreen implements Screen {
 		batch.draw(img, x, y);
 		batch.end();
      */
+
+    private void checkBulletCollisions() {
+        Array<Bullet> playerBulletrs = player.getBullets();
+        CollisionRect bossRect = hongMeiling.getCollisionRect();
+
+        for(Iterator<Bullet> iter = playerBulletrs.iterator(); iter.hasNext(); ) {
+            Bullet bullet = iter.next();
+            if (bullet.getCollisionRect().collidesWith(bossRect)) {
+                System.out.println("Player bullet collided with Hong Meiling's CollisionRect!");
+                hongMeiling.takeDamage(10);
+                iter.remove();
+                bullet.death();
+            }
+        }
+    }
 }

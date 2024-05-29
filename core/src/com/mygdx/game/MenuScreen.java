@@ -8,10 +8,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
+/*DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE
+DO NOT LOOK AT OUR CODE PLEASE*/
 public class MenuScreen implements Screen {
     private final MainGame mainGame;
-    private final com.mygdx.game.BulletPattern bulletPattern;
+    private final BulletPattern bulletPattern;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Texture titleTexture;
@@ -19,7 +26,7 @@ public class MenuScreen implements Screen {
     private String[] menuOptions;
     private int selectedOption;
 
-    public MenuScreen(MainGame mainGame, com.mygdx.game.BulletPattern bulletPattern) {
+    public MenuScreen(MainGame mainGame, BulletPattern bulletPattern) {
         this.mainGame = mainGame;
         this.bulletPattern = bulletPattern;
         this.menuOptions = new String[] {"Start Game", "Options", "Exit"};

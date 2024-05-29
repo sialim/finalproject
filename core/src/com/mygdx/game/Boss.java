@@ -20,7 +20,7 @@ public class Boss extends Entity {
     private Array<Bullet> bullets;
     private BulletPattern pattern;
 
-    private float fireCooldown = 0.125f;
+    private float fireCooldown = 0.25f;
     private float timeSinceLastShot = 0.0f;
 
     private float moveCooldown = 0.5f;
@@ -36,14 +36,6 @@ public class Boss extends Entity {
         getSprite().setSize(sprite.getWidth(), sprite.getHeight());
     }
 
-    public void handleShooting(float deltaTime) {
-        timeSinceLastShot += deltaTime;
-        if (timeSinceLastShot >= fireCooldown) {
-            shoot();
-            timeSinceLastShot = 0.0f;
-        }
-    }
-
     public Array<Bullet> getBullets() {
         return bullets;
     }
@@ -54,8 +46,9 @@ public class Boss extends Entity {
 
     @Override
     public void move(float deltaTime) {
-        entSetX(super.getX());
-        entSetY(super.getY());
+        setX(getX());
+        setY(getY());
+        //rect.move(getX(), getY());
     }
 
     @Override public void draw(Batch batch, float parentAlpha) {
@@ -66,13 +59,13 @@ public class Boss extends Entity {
         float targetY = 500f;
         float duration = 2.0f;
         addAction(Actions.moveTo(getX(), targetY, duration));
+        //moveTowards(new Point(super.getX(), 500f));
     }
 
     @Override
     public void shoot() {
-        System.out.println("Shoot method running");
-        int angle = 270;
-        Bullet bullet = new Bullet(entGetX(), entGetY(), angle, 100);
+        int angle = Utilities.generateRandomNum(210, 330);
+        Bullet bullet = new Bullet(super.entGetX(), 150, angle, 100f, new CollisionRect(super.entGetX(), super.entGetY(), 20, 20));
 
         bullets.add(bullet);
 
@@ -105,14 +98,14 @@ public class Boss extends Entity {
         float speedOfBullet = 5;
 
         if (phase == 3){
-            pattern.setRadialPattern(super.getX(), super.getY(), ammo, speedOfBullet);
+            pattern.setRadialPattern(super.getX(), super.getY(), ammo, speedOfBullet, new CollisionRect(super.getX(), super.getY(), 20, 20));
         } else if (phase == 2) {
             float centerAngle = 180;
             float spreadAngle = 45;
-            pattern.setFanPattern(super.getX(), super.getY(), centerAngle, spreadAngle, ammo, speedOfBullet);
+            pattern.setFanPattern(super.getX(), super.getY(), centerAngle, spreadAngle, ammo, speedOfBullet, new CollisionRect(super.getX(), super.getY(), 20, 20));
         } else {
             float angle = 270;
-            pattern.setStraightPattern(super.getX(), super.getY(), angle, ammo, speedOfBullet);
+            pattern.setStraightPattern(super.getX(), super.getY(), angle, ammo, speedOfBullet, new CollisionRect(super.getX(), super.getY(), 20, 20));
         }
     }
     public int getAtk() {

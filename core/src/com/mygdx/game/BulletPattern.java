@@ -7,33 +7,33 @@ public class BulletPattern {
     public BulletPattern() {
     }
 
-    public Array<Bullet> setStraightPattern(float startX, float startY, float angle, int count, float speed) {
-        Array<Bullet> bullets = new Array<>();
+    public Array<Bullet> setStraightPattern(float x, float y, float angle, int count, float speed, CollisionRect collisionRect) {
+        Array<Bullet> ammo = new Array<>();
         for (int i = 0; i < count; i++) {
-            bullets.add(new Bullet(startX, startY, angle, speed));
+            ammo.add(new Bullet(x, y, angle, speed, collisionRect));
         }
-        return bullets;
+        return ammo;
     }
 
-    public Array<Bullet> setRadialPattern(float startX, float startY, int count, float speed) {
-        Array<Bullet> bullets = new Array<>();
+    public Array<Bullet> setRadialPattern(float x, float y, int count, float speed, CollisionRect collisionRect) {
+        Array<Bullet> ammo = new Array<>();
         float steps = 360.0f / count;
 
         for (int i = 0; i < count; i++) {
             float angle = i * steps;
-            bullets.add(new Bullet(startX, startY, angle, speed));
+            ammo.add(new Bullet(x, y, angle, speed, collisionRect));
         }
-        return bullets;
+        return ammo;
     }
 
-    public Array<Bullet> setFanPattern(float startX, float startY, float centerAngle, float spreadAngle, int count, float speed) {
-        Array<Bullet> bullets = new Array<>();
-        float steps = spreadAngle / (count - 1);
+    public Array<Bullet> setFanPattern(float x, float y, float midAngle, float fanSpread, int count, float speed, CollisionRect collisionRect) {
+        Array<Bullet> ammo = new Array<>();
+        float steps = fanSpread / (count - 1);
 
         for (int i = 0; i < count; i++) {
-            float angle = centerAngle - (spreadAngle / 2) + (i * steps);
-            bullets.add(new Bullet(startX, startY, angle, speed));
+            float angle = midAngle - (fanSpread / 2) + (i * steps);
+            ammo.add(new Bullet(x, y, angle, speed, collisionRect));
         }
-        return bullets;
+        return ammo;
     }
 }
